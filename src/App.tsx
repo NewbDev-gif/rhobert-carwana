@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useMotionValue, useMotionTemplate } from 'framer-motion';
 import { 
   ExternalLink, Send, FileText, Moon, Sun, Check, Award, X as CloseIcon, 
@@ -116,30 +115,6 @@ const GlassCard = ({ children, index = 0, className = "", onClick }: GlassCardPr
   );
 };
 
-// --- NAVBAR ---
-const Navbar = ({ isDark, setIsDark, hidden }: { isDark: boolean; setIsDark: (val: boolean) => void, hidden: boolean }) => {
-  const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
-
-  if (hidden) return null;
-
-  return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 px-2 py-2 bg-white/80 dark:bg-black/20 backdrop-blur-2xl border border-slate-200 dark:border-white/10 rounded-full shadow-2xl">
-      <Link to="/" className={`px-3 py-1.5 text-[10px] font-bold rounded-full transition-all duration-300 ${isActive('/') ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white'}`}>HOME</Link>
-      <Link to="/projects" className={`px-3 py-1.5 text-[10px] font-bold rounded-full transition-all duration-300 ${isActive('/projects') ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white'}`}>PROJECTS</Link>
-      <Link to="/experience" className={`px-3 py-1.5 text-[10px] font-bold rounded-full transition-all duration-300 ${isActive('/experience') ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white'}`}>EXPERIENCE</Link>
-      <div className="h-4 w-[1px] bg-slate-300 dark:bg-white/10 mx-1" />
-      <div className="flex items-center gap-1">
-        <a href="https://github.com/NewbDev-gif" target="_blank" rel="noreferrer" className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white transition-colors"><GithubLogo size={18}/></a>
-        <a href="./pdf/Rhobert-Carwana-Resume.pdf" target="_blank" className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white transition-colors"><FileText size={18}/></a>
-        <button onClick={() => setIsDark(!isDark)} className="p-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full hover:scale-110 transition-transform cursor-pointer">
-          {isDark ? <Sun size={12} fill="currentColor" /> : <Moon size={12} fill="currentColor" />}
-        </button>
-      </div>
-    </nav>
-  );
-};
-
 // --- PAGES ---
 const HomePage = ({ onSelectCert }: { onSelectCert: (cert: Certificate) => void }) => {
   const [copied, setCopied] = useState(false);
@@ -230,48 +205,22 @@ const HomePage = ({ onSelectCert }: { onSelectCert: (cert: Certificate) => void 
 const ProjectsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const projectsPerPage = 2;
-
-  // Pagination Logic
-  const indexOfLastProject = currentPage * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = PROJECTS.slice(indexOfFirstProject, indexOfLastProject);
+  const currentProjects = PROJECTS.slice((currentPage - 1) * projectsPerPage, currentPage * projectsPerPage);
   const totalPages = Math.ceil(PROJECTS.length / projectsPerPage);
 
-  const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
   return (
-    <motion.div 
-      initial={{ opacity: 0, x: 20 }} 
-      animate={{ opacity: 1, x: 0 }} 
-      exit={{ opacity: 0, x: -20 }}
-      className="flex flex-col"
-    >
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col">
       <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-slate-600 dark:text-slate-400 mb-8 italic">/ Selected Works</h2>
-      
-      {/* Smaller Grid Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <AnimatePresence mode="wait">
           {currentProjects.map((p, i) => (
-            <motion.div
-              key={p.title}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
+            <motion.div key={p.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
               <GlassCard index={i} className="flex flex-col p-0 overflow-hidden h-full">
-                {/* Smaller image height */}
-                <div className="h-40 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-                  <img src={p.img} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                </div>
-                {/* Compact inner padding */}
+                <div className="h-40 w-full overflow-hidden bg-slate-100 dark:bg-slate-800"><img src={p.img} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /></div>
                 <div className="p-6">
                   <h3 className="text-lg font-bold text-black dark:text-white mb-2">{p.title}</h3>
                   <p className="text-sm text-slate-700 dark:text-slate-400 mb-6 leading-relaxed">{p.desc}</p>
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {p.tags.map(t => <span key={t} className="text-[9px] font-bold px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg uppercase">{t}</span>)}
-                  </div>
+                  <div className="flex flex-wrap gap-2 mb-8">{p.tags.map(t => <span key={t} className="text-[9px] font-bold px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg uppercase">{t}</span>)}</div>
                   <div className="flex gap-4 border-t border-slate-200 dark:border-white/5 pt-6">
                      <a href={p.github} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1"><GithubLogo size={14}/> CODE</a>
                      <a href={p.demo} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1"><ExternalLink size={14}/> DEMO</a>
@@ -282,28 +231,10 @@ const ProjectsPage = () => {
           ))}
         </AnimatePresence>
       </div>
-
-      {/* Pagination Controls */}
       <div className="flex items-center justify-center gap-4">
-        <button 
-          onClick={prevPage}
-          disabled={currentPage === 1}
-          className={`p-3 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.03] backdrop-blur-md transition-all ${currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-blue-600 hover:text-white'}`}
-        >
-          <ChevronLeft size={20} />
-        </button>
-
-        <div className="px-6 py-2 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.03] backdrop-blur-md text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">
-          Page {currentPage} / {totalPages}
-        </div>
-
-        <button 
-          onClick={nextPage}
-          disabled={currentPage === totalPages}
-          className={`p-3 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.03] backdrop-blur-md transition-all ${currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:bg-blue-600 hover:text-white'}`}
-        >
-          <ChevronRight size={20} />
-        </button>
+        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className={`p-3 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.03] transition-all ${currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-blue-600 hover:text-white'}`}><ChevronLeft size={20} /></button>
+        <div className="px-6 py-2 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.03] text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Page {currentPage} / {totalPages}</div>
+        <button onClick={() => setCurrentPage(2)} disabled={currentPage === totalPages} className={`p-3 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.03] transition-all ${currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:bg-blue-600 hover:text-white'}`}><ChevronRight size={20} /></button>
       </div>
     </motion.div>
   );
@@ -330,77 +261,97 @@ const ExperiencePage = () => (
 export default function App() {
   const [isDark, setIsDark] = useState(true);
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
+  const [activeTab, setActiveTab] = useState<'home' | 'projects' | 'experience'>('home');
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDark) root.classList.add('dark');
-    else root.classList.remove('dark');
+    document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
 
   return (
-    <Router>
-      <div className={`relative min-h-screen w-full transition-colors duration-500 font-sans select-none ${isDark ? 'bg-[#050505] text-white' : 'bg-slate-50 text-black'}`}>
-        
-        {/* Background Gradients */}
-        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-blue-500/10 dark:bg-blue-500/20 blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-purple-500/10 dark:bg-purple-500/20 blur-[120px]" />
-        </div>
+    <div className={`relative min-h-screen w-full transition-colors duration-500 font-sans select-none overflow-hidden ${isDark ? 'bg-[#050505] text-white' : 'bg-slate-50 text-black'}`}>
+      
+      {/* Background Gradients */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-blue-500/10 dark:bg-blue-500/20 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-purple-500/10 dark:bg-purple-500/20 blur-[120px]" />
+      </div>
 
-        <Navbar isDark={isDark} setIsDark={setIsDark} hidden={!!selectedCert} />
+      {/* NAVBAR with State Navigation */}
+      {!selectedCert && (
+        <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 px-2 py-2 bg-white/80 dark:bg-black/20 backdrop-blur-2xl border border-slate-200 dark:border-white/10 rounded-full shadow-2xl">
+          <button 
+            onClick={() => setActiveTab('home')} 
+            className={`px-3 py-1.5 text-[10px] font-bold rounded-full transition-all duration-300 ${activeTab === 'home' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/40' : 'text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white'}`}
+          >
+            HOME
+          </button>
+          <button 
+            onClick={() => setActiveTab('projects')} 
+            className={`px-3 py-1.5 text-[10px] font-bold rounded-full transition-all duration-300 ${activeTab === 'projects' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/40' : 'text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white'}`}
+          >
+            PROJECTS
+          </button>
+          <button 
+            onClick={() => setActiveTab('experience')} 
+            className={`px-3 py-1.5 text-[10px] font-bold rounded-full transition-all duration-300 ${activeTab === 'experience' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/40' : 'text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white'}`}
+          >
+            EXPERIENCE
+          </button>
+          
+          <div className="h-4 w-[1px] bg-slate-300 dark:bg-white/10 mx-1" />
+          
+          <div className="flex items-center gap-1">
+            <a href="https://github.com/NewbDev-gif" target="_blank" rel="noreferrer" className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white transition-colors" title="GitHub"><GithubLogo size={18}/></a>
+            <a href="./pdf/Rhobert-Carwana-Resume.pdf" target="_blank" className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white transition-colors" title="Resume"><FileText size={18}/></a>
+            <button onClick={() => setIsDark(!isDark)} className="p-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full hover:scale-110 transition-transform cursor-pointer">
+              {isDark ? <Sun size={12} fill="currentColor" /> : <Moon size={12} fill="currentColor" />}
+            </button>
+          </div>
+        </nav>
+      )}
 
-        <main className="relative z-10 mx-auto max-w-6xl px-6 pt-32 pb-20">
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<HomePage onSelectCert={setSelectedCert} />} />
-              <Route path="/projects" element={<ProjectsPage />} />
-              <Route path="/experience" element={<ExperiencePage />} />
-            </Routes>
-          </AnimatePresence>
-        </main>
-
-        {!selectedCert && (
-          <footer className="relative z-10 mx-auto max-w-6xl px-6 border-t border-slate-200 dark:border-white/5 py-10 flex justify-between items-center text-slate-500 dark:text-slate-400">
-            <span className="text-[10px] font-bold uppercase tracking-widest">© 2026 Rhobert Christopher Carwana</span>
-            <div className="flex gap-4">
-              <a href="https://github.com/NewbDev-gif" target="_blank" rel="noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"><GithubLogo size={18}/></a>
-            </div>
-          </footer>
-        )}
-
-        {/* FULL SCREEN MODAL */}
-        <AnimatePresence>
-          {selectedCert && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 md:p-8">
-              <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                exit={{ opacity: 0 }} 
-                onClick={() => setSelectedCert(null)} 
-                className="absolute inset-0 bg-black/95 backdrop-blur-2xl cursor-zoom-out" 
-              />
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }} 
-                animate={{ scale: 1, opacity: 1 }} 
-                exit={{ scale: 0.9, opacity: 0 }} 
-                className="relative z-10 w-full max-w-7xl h-full flex flex-col items-center justify-center p-4 md:p-12"
-              >
-                <button 
-                  onClick={() => setSelectedCert(null)} 
-                  className="absolute top-6 right-6 z-[210] p-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all hover:rotate-90 active:scale-90"
-                >
-                  <CloseIcon size={32} />
-                </button>
-                <img 
-                  src={selectedCert.img} 
-                  alt={selectedCert.title} 
-                  className="max-w-full max-h-full object-contain shadow-[0_0_80px_rgba(59,130,246,0.2)] rounded-lg" 
-                />
-              </motion.div>
-            </div>
+      {/* Main Content using State switching */}
+      <main className="relative z-10 mx-auto max-w-6xl px-6 pt-32 pb-20">
+        <AnimatePresence mode="wait">
+          {activeTab === 'home' && (
+            <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <HomePage onSelectCert={setSelectedCert} />
+            </motion.div>
+          )}
+          {activeTab === 'projects' && (
+            <motion.div key="projects" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <ProjectsPage />
+            </motion.div>
+          )}
+          {activeTab === 'experience' && (
+            <motion.div key="experience" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <ExperiencePage />
+            </motion.div>
           )}
         </AnimatePresence>
-      </div>
-    </Router>
+      </main>
+
+      {!selectedCert && (
+        <footer className="relative z-10 mx-auto max-w-6xl px-6 border-t border-slate-200 dark:border-white/5 py-10 flex justify-between items-center text-slate-500 dark:text-slate-400">
+          <span className="text-[10px] font-bold uppercase tracking-widest">© 2026 Rhobert Christopher Carwana</span>
+          <div className="flex gap-4">
+            <a href="https://github.com/NewbDev-gif" target="_blank" rel="noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"><GithubLogo size={18}/></a>
+          </div>
+        </footer>
+      )}
+
+      {/* FULL SCREEN MODAL */}
+      <AnimatePresence>
+        {selectedCert && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 md:p-8">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedCert(null)} className="absolute inset-0 bg-black/95 backdrop-blur-2xl cursor-zoom-out" />
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative z-10 w-full max-w-7xl h-full flex flex-col items-center justify-center p-4 md:p-12">
+              <button onClick={() => setSelectedCert(null)} className="absolute top-6 right-6 z-[210] p-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all hover:rotate-90 active:scale-90"><CloseIcon size={32} /></button>
+              <img src={selectedCert.img} alt={selectedCert.title} className="max-w-full max-h-full object-contain shadow-[0_0_80px_rgba(59,130,246,0.2)] rounded-lg" />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
