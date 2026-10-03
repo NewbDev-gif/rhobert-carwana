@@ -56,7 +56,7 @@ const PROJECTS: Project[] = [
     title: "Laundry Management System", 
     desc: "Mobile laundry booking app", 
     tags: ["Firebase", "OpenStreetMap","Flutter", "Dart"],
-    img: "https://images.unsplash.com/photo-1545173153-5c024eeea52b?auto=format&fit=crop&q=80&w=800",
+    img: "/images/laundry-app.png",
     github: "https://github.com/NewbDev-gif",
   }
 ];
