@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useMotionTemplate } from 'framer-motion';
-import { 
-  ExternalLink, Send, FileText, Moon, Sun, Check, Award, X as CloseIcon, 
-  ChevronLeft, ChevronRight 
+import {
+  Send, FileText, Moon, Sun, Check, Award, X as CloseIcon,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import profilePic from './Profile.jpg';
 
