@@ -13,7 +13,6 @@ interface Project {
   tags: string[];
   img: string;
   github: string;
-  demo: string;
 }
 
 interface Certificate {
@@ -38,7 +37,6 @@ const PROJECTS: Project[] = [
     tags: ["HTML","CSS", "JS","ElectronJS"],
     img: "/images/posture-coach.png",
     github: "https://github.com/Rays30/posture-desktop-app",
-    demo: "https://demo.com"
   },
   { 
     title: "LW Minimart", 
@@ -46,7 +44,6 @@ const PROJECTS: Project[] = [
     tags: ["Tauri", "Vite"],
     img: "/images/lw-minimart.png",
     github: "https://github.com/NewbDev-gif/lw-mart-manager",
-    demo: "https://demo.com"
   },
   { 
     title: "Lifewood Website", 
@@ -54,7 +51,6 @@ const PROJECTS: Project[] = [
     tags: ["Firebase", "HTML", "CSS", "JavaScript"],
     img: "/images/lifewood-website.png",
     github: "https://github.com/NewbDev-gif/lifewood",
-    demo: "https://lifewood-test.vercel.app/"
   },
   { 
     title: "Laundry Management System", 
@@ -62,7 +58,6 @@ const PROJECTS: Project[] = [
     tags: ["Firebase", "OpenStreetMap","Flutter", "Dart"],
     img: "https://images.unsplash.com/photo-1545173153-5c024eeea52b?auto=format&fit=crop&q=80&w=800",
     github: "https://github.com/NewbDev-gif",
-    demo: "https://demo.com"
   }
 ];
 
@@ -223,7 +218,6 @@ const ProjectsPage = () => {
                   <div className="flex flex-wrap gap-2 mb-8">{p.tags.map(t => <span key={t} className="text-[9px] font-bold px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg uppercase">{t}</span>)}</div>
                   <div className="flex gap-4 border-t border-slate-200 dark:border-white/5 pt-6">
                      <a href={p.github} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1"><GithubLogo size={14}/> CODE</a>
-                     <a href={p.demo} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1"><ExternalLink size={14}/> DEMO</a>
                   </div>
                 </div>
               </GlassCard>
