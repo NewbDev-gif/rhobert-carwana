@@ -90,7 +90,7 @@ const CERTIFICATES: Certificate[] = [
 const CONTACT_EMAIL = "rhobertcarwana@gmail.com";
 
 // Replace this with your actual phone number.
-const CONTACT_PHONE = "09562659104";
+const CONTACT_PHONE = "YOUR_PHONE_NUMBER";
 
 // --- BRAND ICONS ---
 const GithubLogo = ({
@@ -171,21 +171,18 @@ const ContactModal = ({
 }: {
   onClose: () => void;
 }) => {
-  const [copied, setCopied] = useState<"phone" | "email" | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  const copyToClipboard = async (
-    value: string,
-    type: "phone" | "email"
-  ) => {
+  const copyPhone = async () => {
     try {
-      await navigator.clipboard.writeText(value);
-      setCopied(type);
+      await navigator.clipboard.writeText(CONTACT_PHONE);
+      setCopied(true);
 
       setTimeout(() => {
-        setCopied(null);
+        setCopied(false);
       }, 2000);
     } catch (error) {
-      console.error("Failed to copy:", error);
+      console.error("Failed to copy phone number:", error);
     }
   };
 
@@ -244,11 +241,11 @@ const ContactModal = ({
           <div className="space-y-3 px-6 pb-8">
             {/* Phone */}
             <button
-              onClick={() => copyToClipboard(CONTACT_PHONE, "phone")}
+              onClick={copyPhone}
               className="group flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left transition-all hover:border-blue-500/30 hover:bg-blue-50 dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.07]"
             >
               <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
-                {copied === "phone" ? (
+                {copied ? (
                   <Check size={20} />
                 ) : (
                   <Phone size={20} />
@@ -257,8 +254,9 @@ const ContactModal = ({
 
               <div className="min-w-0 flex-1">
                 <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-500">
-                  {copied === "phone" ? "Copied!" : "Phone"}
+                  {copied ? "Copied!" : "Phone"}
                 </p>
+
                 <p className="mt-1 truncate text-sm font-bold text-slate-900 dark:text-white">
                   {CONTACT_PHONE}
                 </p>
@@ -283,6 +281,7 @@ const ContactModal = ({
                 <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-500">
                   Gmail
                 </p>
+
                 <p className="mt-1 truncate text-sm font-bold text-slate-900 dark:text-white">
                   {CONTACT_EMAIL}
                 </p>
@@ -292,29 +291,6 @@ const ContactModal = ({
                 size={16}
                 className="text-slate-400 transition-colors group-hover:text-red-500"
               />
-            </button>
-
-            {/* Copy Email */}
-            <button
-              onClick={() => copyToClipboard(CONTACT_EMAIL, "email")}
-              className="group flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left transition-all hover:border-purple-500/30 hover:bg-purple-50 dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.07]"
-            >
-              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-purple-500">
-                {copied === "email" ? (
-                  <Check size={20} />
-                ) : (
-                  <Copy size={20} />
-                )}
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-500">
-                  {copied === "email" ? "Copied!" : "Copy Email"}
-                </p>
-                <p className="mt-1 truncate text-sm font-bold text-slate-900 dark:text-white">
-                  {CONTACT_EMAIL}
-                </p>
-              </div>
             </button>
 
             {/* Close */}
@@ -377,6 +353,7 @@ const HomePage = ({
             <span className="text-4xl font-black text-black dark:text-white">
               {PROJECTS.length}
             </span>
+
             <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest mt-2">
               Projects Completed
             </span>
@@ -732,7 +709,7 @@ export default function App() {
         </nav>
       )}
 
-      {/* Main Content using State switching */}
+      {/* Main Content */}
       <main className="relative z-10 mx-auto max-w-6xl px-6 pt-32 pb-20">
         <AnimatePresence mode="wait">
           {activeTab === "home" && (
@@ -836,3 +813,4 @@ export default function App() {
     </div>
   );
 }
+
